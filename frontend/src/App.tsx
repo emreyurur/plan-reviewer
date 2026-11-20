@@ -8,6 +8,9 @@ type Schedule = { status: 'scheduled' | 'cycle'; schedule: { id: string; start_d
 type Plan = { id: string; text: string; review: { deadline_day: number | null; tasks: Task[]; findings: Finding[] }; schedule: Schedule };
 type AiReviewResponse = { review: Plan['review']; schedule: Schedule; provider: string; model: string };
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? '').replace(/\/$/, '');
+const apiUrl = (path: string) => `${API_BASE_URL}${path}`;
+
 async function asJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const body = await response.json().catch(() => null);
@@ -38,7 +41,7 @@ export default function App() {
 
   useEffect(() => {
     const controller = new AbortController();
-    fetch('/api/plans', { signal: controller.signal }).then(asJson<PlanSummary[]>).then((items) => {
+    fetch(apiUrl('/api/plans'), { signal: controller.signal }).then(asJson<PlanSummary[]>).then((items) => {
       setPlans(items);
       if (items.length) setSelectedId(items[0].id);
       else setLoading(false);
@@ -52,7 +55,7 @@ export default function App() {
     if (!selectedId) return;
     const controller = new AbortController();
     setLoading(true); setError(''); setPlan(null); setSelectedQuote(null); setCalculationNotice(''); setAiReviewMeta(null);
-    fetch(`/api/plans/${encodeURIComponent(selectedId)}`, { signal: controller.signal }).then(asJson<Plan>).then((next) => {
+    fetch(apiUrl(`/api/plans/${encodeURIComponent(selectedId)}`), { signal: controller.signal }).then(asJson<Plan>).then((next) => {
       setPlan(next); setTasks(next.review.tasks); setDeadline(next.review.deadline_day); setSchedule(next.schedule);
       setCalculatedInput(JSON.stringify([next.review.tasks, next.review.deadline_day]));
     }).catch((reason) => { if (reason.name !== 'AbortError') setError(reason.message); })
@@ -104,7 +107,7 @@ export default function App() {
     setRecalculating(true); setError(''); setCalculationNotice('');
     try {
       const previousEnd = schedule?.end_day;
-      const result = await fetch('/api/schedule', {
+      const result = await fetch(apiUrl('/api/schedule'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ deadline_day: deadline, tasks: tasks.map(({ quote: _quote, ...task }) => task) }),
       }).then(asJson<Schedule>);
@@ -125,7 +128,7 @@ export default function App() {
     if (!plan) return;
     setReviewing(true); setError(''); setCalculationNotice(''); setOpenDependencyId(null);
     try {
-      const result = await fetch(`/api/plans/${encodeURIComponent(plan.id)}/review`, { method: 'POST' }).then(asJson<AiReviewResponse>);
+      const result = await fetch(apiUrl(`/api/plans/${encodeURIComponent(plan.id)}/review`), { method: 'POST' }).then(asJson<AiReviewResponse>);
       const nextPlan = { ...plan, review: result.review, schedule: result.schedule };
       setPlan(nextPlan); setTasks(result.review.tasks); setDeadline(result.review.deadline_day); setSchedule(result.schedule);
       setCalculatedInput(JSON.stringify([result.review.tasks, result.review.deadline_day]));

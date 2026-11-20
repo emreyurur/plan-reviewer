@@ -20,6 +20,18 @@ def test_health_check():
     assert response.json() == {"status": "ok"}
 
 
+def test_vercel_frontend_is_allowed_by_cors():
+    response = TestClient(app).options(
+        "/api/plans",
+        headers={
+            "Origin": "https://plan-reviewer-example.vercel.app",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "https://plan-reviewer-example.vercel.app"
+
+
 def valid_body():
     return {
         "tasks": [
