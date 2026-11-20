@@ -8,7 +8,7 @@
 
 - Replaced the dependency-only scheduler with an OR-Tools CP-SAT model that minimizes the finish day while enforcing dependencies and one-task-at-a-time owner constraints.
 - Added cycle detection, strict request/review schemas, clear 4xx responses, quote verification, model-output retries, and atomic review file writes.
-- Expanded the backend tests to cover owner conflicts, parallel work, cycles, invalid input, unknown plans, quote validation, retries, AI configuration, and the health endpoint. The suite has 18 passing tests, and the supplied contract checks pass.
+- Expanded the backend tests to cover owner conflicts, parallel work, cycles, invalid input, unknown plans, quote validation, retries, AI configuration, CORS, and the health endpoint. The suite has 19 passing tests, and the supplied contract checks pass.
 - Reworked the interface around the officer's decision: deadline status, finish metrics, findings, editable tasks, dependency controls, recalculation feedback, and source evidence. I followed `BRAND.md` and added responsive, keyboard-accessible loading and error states.
 - Added a reproducible Docker deployment configuration and a Render health check.
 
@@ -18,12 +18,12 @@ I kept edits in the browser session instead of adding persistence, accounts, or 
 
 ## What is not ready
 
-The public deployment URL still needs to be created. I did not regenerate the three stored sample reviews with a live model; the starter `lantern-festival.json` contains a quote that does not match the plan verbatim. I left it unchanged because the assignment requires those files to be produced by `./review`, not edited by hand.
+The app is deployed with the frontend on Vercel and the API on Render. I did not regenerate the three stored sample reviews with a live model; the starter `lantern-festival.json` contains a quote that does not match the plan verbatim. I left it unchanged because the assignment requires those files to be produced by `./review`, not edited by hand.
 
 ## What I would do next and a rough estimate
 
 - Run the three sample plans through the configured model and inspect the results: 30–45 minutes.
-- Deploy the Docker service, run the contract checks against its URL, and perform a final mobile/accessibility pass: 30–45 minutes.
+- Run the contract checks against the final URL and perform a final mobile/accessibility pass: 20–30 minutes.
 - Add persisted review revisions and a compact schedule timeline: 3–4 hours.
 - Add an MCP connector for the council's document system (for example Google Drive or SharePoint) so officers can open a plan from its existing location, run the review, and link the decision back to the source document: 1–2 days, depending on the provider and authentication requirements.
 
