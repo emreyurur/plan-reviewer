@@ -10,7 +10,7 @@
 - Added cycle detection, strict request/review schemas, clear 4xx responses, quote verification, model-output retries, and atomic review file writes.
 - Expanded the backend tests to cover owner conflicts, parallel work, cycles, invalid input, unknown plans, quote validation, retries, AI configuration, CORS, and the health endpoint. The suite has 19 passing tests, and the supplied contract checks pass.
 - Reworked the interface around the officer's decision: deadline status, finish metrics, findings, editable tasks, dependency controls, recalculation feedback, and source evidence. I followed `BRAND.md` and added responsive, keyboard-accessible loading and error states.
-- Added a reproducible Docker deployment configuration and a Render health check.
+- Added a reproducible Docker deployment configuration and a Render health check. The final Vercel frontend, Render health endpoint, AI review endpoint, and cross-origin request were tested live and returned HTTP 200. A real `deepseek-flash` call extracted all eight Spring Market tasks, produced evidence-backed findings, and returned an optimal day-18 schedule against the day-21 deadline.
 
 ## What I cut and why
 

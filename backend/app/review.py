@@ -27,7 +27,10 @@ quote must be an exact, case-sensitive excerpt from the plan that supports that 
 non-null finding quote must also be exact. Use unique task ids and only refer to ids in the
 same output. If the deadline is absent or contradictory, use null and add a finding. Report
 contradictions, missing information, circular dependencies, and feasibility concerns. Do not
-invent facts or silently repair the plan.
+invent facts or silently repair the plan. Keep every finding title consistent with its detail.
+Check all schedule arithmetic before describing slack or lateness: finishing before a deadline
+means the plan has slack, not that it exactly meets the deadline. Do not call a feasible plan
+critical solely because it has a deadline.
 
 PLAN START
 """
